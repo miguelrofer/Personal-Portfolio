@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miguel Rodriguez Portfolio</title>
+    <script src="//d3js.org/colorbrewer.v1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.6.0/d3.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="newstyle.css">
+
+    <style>
+
+    *{
+      font-family: Lato;
+    }
+
+    .axis-x path {
+      stroke: #000;
+    }
+
+    .line {
+      fill: none;
+      stroke-width: 1.5px;
+      stroke-linejoin: "round";
+      stroke-linecap: "round";
+    }
+
+    .line:hover {
+      stroke-width: 2px;
+    }
+
+    #container{
+    display: flex;
+    flex-wrap: wrap;
+    }
+    #headline{
+      min-width:100%;
+    }
+
+    #menu{
+      display: inline;
+      width: 100%;
+      /* border:1px solid black; */
+      /* padding: 1%; */
+    }
+
+    #nation{
+      display: inline;
+      padding-left: 1%;
+    }
+
+    span{
+      color:rgb(25, 159, 139)
+    }
+
+    html, body, #vis {
+    margin: auto;
+    height: 100%;
+        }
+
+    .tooltip {
+      position: absolute;
+      width: 90px;
+      height: 40px;
+      pointer-events: none;
+      background-color: rgb(0, 26, 70);
+      padding: .2%;
+      color: white;
+      }
+
+    </style>
+
+
+  </head>
+
+  <body>
+<!-- ==== Main home starts ==== -->
+
+
+    <div class='menu'>
+        <nav>
+          <ul>
+            <li><a href="index.html">About</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="viz.html">Visualizations</a></li>
+            <li><a href="contact.html">Contact</a></li>
+
+          </ul>
+        </nav>
+
+    </div>
+
+
+  <!-- ============== MAIN HOME ENDS ============== -->
+<section>
+
+<div id="container">
+  <div class="visualization">
+    <div id="vis"></div>
+  </div>
+</div>
+
+
+
+
+
+<!-- ============== FOOTER STARTS ============== -->
+
+    <footer>
+      <div class="row">
+
+              <div class="lastText">
+
+                <p>© Miguel Rodriguez 2018</p>
+                <!-- <a href="#" class="fa fa-facebook"></a>
+                <a href="#" class="fa fa-twitter"></a> -->
+              </div>
+          </div>
+
+  </footer>
+  </section>
+<!-- ============== FOOTER ENDS ============== -->
+<script>
+
+// var width = document.getElementById('vis').clientWidth;
+//  var height = document.getElementById('vis').clientHeight;
+
+var width = 800;
+var height = 500;
+ var margin = {top: 30, left: 30, right: 30, bottom: 30}
+ var padding = {right:65, bottom: 30}
+ var svg = d3.select('#vis')
+ .append('svg')
+ .attr('height', height)
+ .attr('width', width)
+ .append('g')
+ .attr('transform', 'translate(' + margin.left + ',' +
+ margin.top + ')');
+
+ width = width - margin.left - margin.right;
+ height = height - margin.top - margin.bottom;
+
+ var x_scale = d3.scaleLinear()
+   .rangeRound([0, width]);
+
+ var y_scale = d3.scaleLinear()
+   .rangeRound([height, 0]);
+
+ var radio_scale = d3.scaleLinear()
+   .range([0,400]);
+
+   // add the tooltip area to the webpage
+  var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+  d3.csv('fitness.csv', function(data){
+  // console.log(data);
+  console.log(data[0].Pulse2);
+  // console.log( d3.max(data, function(d){ return +d.Age; }));
+
+  x_scale.domain(d3.extent(data, function(d){ return +d.Weight; }));
+  y_scale.domain(d3.extent(data, function(d){ return +d.Height; }));
+  radio_scale.domain(d3.extent(data, function(d){return +d.Pulse2;}));
+
+ var colour_scale = d3.scaleQuantile()
+  .range(colorbrewer.Blues[6]);
+
+ colour_scale.domain(d3.extent(data, function(d){ return +d.Age; }));
+
+ var colours = colorbrewer.Blues[6];
+ console.log(colour_scale.invertExtent(colours[0]));
+ console.log(colour_scale.invertExtent(colours[1]));
+ console.log(colour_scale.invertExtent(colours[2]));
+ // the previous consoles print the range of ages included by every specific color
+
+ var dots = svg.selectAll('.dot')
+  .data(data);
+ //exit
+ dots
+  .exit()
+  .remove();
+ // enter
+ var new_dots = dots
+  .enter()
+  .append('circle')
+  .attr('class', 'dot')
+  .attr('r', function(d){return radio_scale(d.Pulse2)/25;})
+  .attr('fill', function(d){ return colour_scale(+d.Age); })
+  .attr('stroke', 'black')
+  .attr('stroke-width', '0.5px');
+
+ //update
+ new_dots.merge(dots)
+  .attr('cx', function(d){ return x_scale(+d.Weight); })
+  .attr('cy', function(d){ return y_scale(+d.Height); })
+  .on("mouseover", function(d) {
+     tooltip.transition()
+          .duration(120)
+          .style("opacity", .9);
+     tooltip.html("Age: " + (d.Age) + "<br/>" + "Pulse: " + (d.Pulse2) )
+     .style("left", (d3.event.pageX) + "px")
+      .style("top", (d3.event.pageY - 28) + "px");
+ })
+ .on("mouseout", function(d) {
+     tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
+ });
+
+  svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x_scale))
+      .append("text")
+        .attr("fill", "#000")
+        .attr("x", width )
+        .attr("y", -8)
+        .attr("text-anchor", "end")
+        .text("Weight (kg)");
+    // .select(".domain")
+    //   .remove();
+
+  svg.append("g")
+      .call(d3.axisLeft(y_scale))
+      // .attr("transform", "translate(" + width + ", 0 )")
+      .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", "0.71em")
+        .attr("text-anchor", "end")
+        .text("Height (cm)");
+
+   // create legend
+
+  var legend = svg.selectAll('.legend')
+     .data(colours);
+  var new_legend = legend
+   .enter()
+   .append('g')
+   .attr('class', 'legend');
+  new_legend.merge(legend)
+   .append('rect')
+   .attr('width', 20)
+   .attr('height', 20)
+   .attr('x', width - padding.right)
+   .attr('y', function(d, i){return height-padding.bottom -40-(i*20);})
+   .attr('fill', function(d){ return d })
+   .attr('stroke', 'black')
+   .attr('stroke-width', '0.5px');
+  new_legend.merge(legend)
+   .append('text')
+   .attr('x', width - padding.right + 25)
+   .attr('y', function(d, i){return height-padding.bottom -25 -(i*20);})
+   .text(function(d){
+    var low = colour_scale.invertExtent(d)[0];
+    var high = colour_scale.invertExtent(d)[1];
+    return low + " - " + high;
+   });
+
+
+
+});
+</script>
+
+</body>
+</html>
