@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px avenir;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.browser text {
+  text-anchor: end;
+}
+
+</style>
+<body>
+  <div id="vis">
+  </div>
+</body>
+<script src="http://d3js.org/d3.v4.js"></script>
+<script>
+
+
+var width = 800;
+var height = 500;
+var margin = {top: 20, right: 20, bottom: 20, left: 40};
+
+var svg = d3.select("#vis")
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          width = width - margin.left - margin.right;
+          height = height - margin.top - margin.bottom;
+
+var parseDate = d3.timeParse("%Y");
+
+var x = d3.scaleTime()
+              .range([0, width]);
+
+var y = d3.scaleLinear()
+              .range([height, 0]);
+
+var color = d3.scaleOrdinal()
+        .range(["#ffd700",
+"#ffb14e",
+"#fa8775",
+"#ea5f94",
+"#cd34b5",
+"#9d02d7",
+"#0000ff",
+"#185e95",
+"#55bcc9",
+"#00f4b2",
+"#7dda68"]);
+
+
+// var area = d3.area()
+//       .x(function(d) { return x(d.Year); })
+//       .y0(function(d) { return y(d.y0); })
+//       .y1(function(d) { return y(d.y0 + d.y); });
+
+
+
+var stack = d3.stack()
+
+
+
+
+  // svg.append("text")
+  //   .attr("x", 0)
+  //   .attr("y", -40)
+  //   .attr("dy", "0.71em")
+  //   .attr("fill", "#000")
+  //   .text("Exports evolution per European country")
+  //   .style("font", "23px avenir")
+  //   .style("fill", "#000000");
+
+
+    //  svg.append("text")
+    // .attr("x", 0)
+    // .attr("y", 402)
+    // .attr("dy", "0em")
+    // .style("font", "12px avenir")
+    // .style("fill", "#000000")
+    // .text("This is a plot of the 10 most frequent incidents over a 24-hour period  in San Francisco during December 2016. Interestingly enough, most ");
+    //
+    // svg.append("text")
+    // .attr("x", 0)
+    // .attr("y", 402)
+    // .attr("dy", "1em")
+    // .style("font", "12px avenir")
+    // .style("fill", "#000000")
+    // .text("categories follow a similar structure: the occurences dip in the early morning and peak during the lunch and early evening hours.");
+
+    //   svg.append("text")
+    // .attr("x", 0)
+    // .attr("y", 402)
+    // .attr("dy", "3em")
+    // .style("font", "12px avenir")
+    // .style("fill", "#000000")
+    // .text("By Anaelia Ovalle")
+    // .style("font-weight", "bold");
+
+
+
+		d3.csv("exportationsEU.csv", function(error, data) {
+
+
+      color.domain(d3.keys(data[0]).filter(function(key) { return key !== 'Year'; }));
+        var keys = data.columns.filter(function(key) { return key !== 'Year'; })
+     data.forEach(function(d) {
+      d.Year = parseDate(d.Year);
+  		d.Belgium = parseInt(d.Belgium);
+      d.Others = parseInt(d.Others);
+      d.CzechRepublic= parseInt(d.CzechRepublic);
+      d.Germany  = parseInt(d.Germany);
+      // d.Ireland = parseInt(d.Ireland);
+      // d.Greece = parseInt(d.Greece);
+      d.Spain = parseInt(d.Spain);
+      d.France = parseInt(d.France);
+      // d.Croatia = parseInt(d.Croatia);
+      d.Italy = parseInt(d.Italy);
+      // d.Cyprus= parseInt(d.Cyprus);
+      // d.Latvia= parseInt(d.Latvia);
+      // d.Lithuania  = parseInt(d.Lithuania);
+      // d.Luxembourg = parseInt(d.Luxembourg);
+      // d.Malta = parseInt(d.Malta);
+      d.Netherlands = parseInt(d.Netherlands);
+      d.Austria = parseInt(d.Austria);
+      d.Poland = parseInt(d.Poland);
+      // d.Portugal= parseInt(d.Portugal);
+      // d.Romania= parseInt(d.Romania);
+      // d.Slovenia  = parseInt(d.Slovenia);
+      // d.Slovakia = parseInt(d.Slovakia);
+      // d.Finland = parseInt(d.Finland);
+      // d.Sweden = parseInt(d.Sweden);
+      d.UK = parseInt(d.UK);
+       });
+
+       var area = d3.area()
+           .x(function(d) {
+             return x(d.data.Year); })
+           .y0(function(d) {return y(d[0]); })
+           .y1(function(d) { return y(d[1]); });
+
+
+
+
+       var maxDateVal = d3.max(data, function(d){
+           var vals = d3.keys(d).map(function(key){ return key !== 'Year' ? d[key] : 0 });
+           return d3.sum(vals);
+           console.log(vals);
+
+         });
+  console.log(maxDateVal);
+
+  // maxYearVal = 5227000;
+
+
+
+//   // Set domains for axes
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+  y.domain([0, maxDateVal]);
+
+  stack.keys(keys);
+  stack.order(d3.stackOrderNone);
+  stack.offset(d3.stackOffsetNone);
+
+  console.log(stack(data));
+  console.log(data);
+
+  var browser = g.selectAll('.browser')
+      .data(stack(data))
+    	.enter().append("g")
+      .attr('class', function(d){ return 'browser ' + d.key; });
+
+  browser.append("path")
+      .attr("class", "area")
+      .attr("d", area)
+      .style('fill', function(d) { return color(d.key); });
+
+
+  // browser.append("text")
+  //     .datum(function(d) { return {country: d.country, value: d.values[d.values.length - 1]}; })
+  //     .attr("transform", function(d) { return "translate(" + x(d.value.Year) + "," + y(d.value.y0 + d.value.y / 2) + ")"; })
+  //     .attr("x", -6)
+  //     .attr("dy", "-0.882em")
+  //     .text(function(d) {
+  //   			if(d.name == "larceny_theft"){
+  //           return "larceny/theft";
+  //         }
+  //    			if(d.name == "non_criminal"){
+  //           return "non-criminal";
+  //         }
+  //      		if(d.name == "assault"){
+  //           return d.name;
+  //         }})
+  //     .style("font", "15px avenir")
+  // 		.attr("transform", function(d) { return "translate(500," + y(d.value.y0 + d.value.y / 2) + ")"; })
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x).ticks(5));
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y));
+
+
+
+  //  g.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(xAxis).append("text")
+  //  		.attr("x", 350)
+  //     .attr("y", 36)
+  //     .attr("fill", "#000")
+  //     .text("Year")
+  //   	.style("font-weight", "bold");
+  //
+  // g.append("g")
+  //     .attr("class", "y axis")
+  //     .call(yAxis)
+  //     .append("text")
+  //     .attr("transform", "rotate(-90)")
+  // 		.attr("x", -250)
+  //     .attr("y", -40)
+  //     .attr("dy", "0.3408em")
+  //     .attr("fill", "#000")
+  //     .text("Exports (M €)")
+  //  		.style("font-weight", "bold");
+
+   var legend = svg.selectAll(".legend")
+     	.data(color.domain()).enter()
+   		.append("g")
+    	.attr("class","legend")
+     .attr("transform", "translate(" + (width +40) + "," + 0+ ")");
+
+   legend.append("rect")
+     .attr("x", 0)
+     .attr("y", function(d, i) { return 20 * i; })
+     .attr("width", 10)
+     .attr("height", 10)
+     .style('fill', function(d) { return color(d.key); });
+
+
+    legend.append("text")
+     .attr("x", 20)
+     .attr("dy", "0.75em")
+     .attr("y", function(d, i) { return 20 * i; })
+     .text(function(d) {return d});
+
+    legend.append("text")
+     .attr("x",0)
+//      .attr("dy", "0.75em")
+     .attr("y",-10)
+     .text("Categories");
+
+
+});
+
+</script>

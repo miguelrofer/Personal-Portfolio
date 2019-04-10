@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+        <title>My Page</title>
+        <link rel="stylesheet" href="css/style.css">
+        <script src="//d3js.org/d3.v4.min.js" defer></script>
+        <script src="http://d3js.org/d3.v4.min.js"></script>
+        <script src="http://d3js.org/queue.v1.min.js"></script>
+        <script src="http://d3js.org/topojson.v1.min.js"></script>
+        <script src="js/d3-tip.js"></script>
+        <script type="text/javascript" src="js/EUimportexport.js" defer></script>
+        <script type="text/javascript" src="js/proba1.js" defer></script>
+        <script type="text/javascript" src="js/intraextra.js" defer></script>
+        <!-- <script type="text/javascript" src="js/worldfinal.js" defer></script> -->
+        <script type="text/javascript" src="js/materials.js" defer></script>
+
+
+
+
+
+    </head>
+
+
+<body>
+<div class="header">
+  <div class = "brand">
+    <p>ROFER <span class= "classforspan">GRAPHICS</span></p>
+  </div>
+</div>
+<div id=container>
+    <div id="visEU">
+    </div>
+
+
+    <div class="headline">
+      <h1>Europe in the global bazar</h1>
+      <!-- <p> How well are EU economies doing in the era of globalisation?</p> -->
+      <p>The US and China clash on balancing their commercial relations whereas the European Union prays for avoiding a global trade war. But, how is the second largest world economy doing when it comes to buying and selling its products in the global market?</p>
+      <!-- <p>MAY 8, 2018</p> -->
+    </div>
+
+</div>
+<div id="MainContainer">
+  <div id="row">
+    <h2>A narrow surplus</h2>
+    <p>The European Union has harnessed the financial crisis to improve its balance trade of goods with the rest of the world. Since 2012, the number of products exported by the group of 28 countries to other partners outpaced the imports for the first time in a decade. However, the trade balance did not always register surpluses.<p>
+
+    <p>Regarding trade of good -services not included-, the EU imports from China much more than it sells to the Asian nation. The gap amounts to over 176 billion €. The EU holds a better position when it comes to trading with the first world economy: US. In that case, the difference between net exports and imports equals  120 billion € in favour of the EU.<br><br>
+
+    A close and controversial neighbour, Russia, keeps a remarkable trade of goods surplus, mostly caused by sales of oil and gas to European countries from its Siberians wells. A similar phenomenon explains the surplus registered by Norway, a net oil exporter.<p>
+  </div>
+  <div id="map">
+  </div>
+    <div class='radio'>
+              <label class='radio-inline'>
+                <input type="radio" name="balance" value="positive" onclick='negative()'> Deficit
+              </label>
+              <label class='radio-inline'>
+                <input type="radio" name="balance" value="positive" onclick='positive()'> Surplus
+              </label>
+    </div>
+
+
+    <div id="row">
+      <h2>One Europe, three engines</h2>
+      <p>The financial crisis of 2007-2008 put the brake on the economic convergence between Northern and Southern European economies. Spain, Portugal, Italy and, especially, Greece, registered a dramatic fall in their national GDP and a massive increase of their unemployment and deficit rates. But differences between a thrilling North and a crippling South does not stop there.<p>
+      <p>An analysis of the national trade balances shows how most of the commercial surpluses in Europe are registered in Northern states, with the example of Germany standing out among them. This country is followed by the Netherlands, Denmark, Ireland and Belgium. Sweden, which preserved a very thin surplus after the recession, shifted his position to the group of nations with a trade of goods deficit.<p><br>
+    </div>
+  <div id= "North">
+    <div id="visGermany">
+    </div>
+    <div id="visNetherlands">
+    </div>
+    <div id="visBritain">
+    </div>
+    <div id="visFrance">
+    </div>
+    <div id="visDenmark">
+    </div>
+    <div id="visIreland">
+    </div>
+    <div id="visBelgium">
+    </div>
+    <div id="visAustria">
+    </div>
+    <div id="visSweden">
+    </div>
+    <div id="visFinland">
+    </div>
+    <div id="visLuxembourg">
+    </div>
+    <div id="row">
+      <p>The other side of the bright North is represented by France and the UK, both with significant trade deficits. Luxembourg is part of this group too, but it widely offsets this commercial gap with its exports of financial services to other countries, both outside and inside of the European Union. <p>
+    </div>
+
+  </div>
+
+  <div id="row">
+    <h3>A downward Mediterranean EU</h3>
+    <p>The financial crisis of 2007-2008 put the break on the economic convergence between Northern and Southern European economies. Spain, Portugal, Italy and, especially, Greece, registered a dramatic fall in their national GDP and a huge increase of their unemployment and deficit rates. <p><br>
+  </div>
+  <div id= "South">
+    <div id="visItaly">
+    </div>
+    <div id="visSpain">
+    </div>
+    <div id="visPortugal">
+    </div>
+    <div id="visGreece">
+    </div>
+    <div id="visMalta">
+    </div>
+    <div id="visCyprus">
+    </div>
+  </div>
+
+  <div id="row">
+    <h3>The Eastern enlargement</h3>
+    <p>Only four of the Eastern European countries that became part of the EU in the past decade registered a surplus in their trade balance of goods. Czech Republic, Hungary, Slovakia and Slovenia export more than import, although these two latter nations could not get rid of their commercial deficit until 2011.<br><br>
+
+    Within this group of countries there is a clear difference between the Baltic nations and the rest regarding the evolution of imports and exports.<p><br>
+  </div>
+  <div id= "East">
+    <div id="visSlovakia">
+    </div>
+    <div id="visSlovenia">
+    </div>
+    <div id="visPoland">
+    </div>
+    <div id="visHungary">
+    </div>
+    <div id="visRomania">
+    </div>
+    <div id="visBulgaria">
+    </div>
+    <div id="visEstonia">
+    </div>
+    <div id="visLatvia">
+    </div>
+    <div id="visLithuania">
+    </div>
+    <div id="visCzechRepublic">
+    </div>
+
+  </div>
+
+  <div id="row">
+    <h2>Who depends most on Europe?</h2>
+    <p>Eurostat data shows enormous differences between EU countries regarding who is the main client. Countries such as Slovakia or Luxembourg export eight out of 10 goods to Europe. However, the UK registers a very different trend: just 44% of its exports of products end up in EU countries. Within the European Union, only the UK and Malta export more goods outside the customs union than to their European partners.<p>
+    </div>
+
+  <div id="intraextra">
+    <h2>Share of exports to IntraEU and ExtraEU countries</h2>
+  </div>
+
+  <div id="row">
+    <h2>Raw materials in the South, machinery in the North</h2>
+    <p>An analysis of the trade balances per product shows how different is commerce across Europe. Northern countries, such as Germany, register a surplus trade balance in high valued products, such as machinery and chemicals. In the South, such as Spain or Greece, the stronger export sectors, the ones with a surplus, are more related to cheaper products, less manufactured, like food or raw materials. <p>
+
+  </div>
+  <div id='vis-container'>
+    <h2>Trade balance by type of product</h2>
+  </div>
+
+</div>
+
+
+<script>
+
+// (function (){
+
+// var balance;
+
+var svgmap,projection, path, margin, width, height, coords, balance, size;
+
+
+
+margin = {top: 0, right: 0, bottom: 0, left: 0};
+width = 960 - margin.left - margin.right;
+height = 500 - margin.top - margin.bottom;
+
+path = d3.geoPath();
+
+svgmap = d3.select("#map")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append('g')
+            .attr('class', 'map');
+
+projection = d3.geoMercator()
+                   .scale(130)
+                  .translate( [width / 2, height / 1.5]);
+
+path = d3.geoPath().projection(projection);
+
+
+
+d3.queue()
+    .defer(d3.json, "http://enjalot.github.io/wwsd/data/world/world-110m.geojson")
+    .defer(d3.csv, "data/tradewithworld.csv")
+    .defer(d3.csv, "data/coords.csv")
+    .await(ready);
+
+function ready(error, world, b, c) {
+  var balanceById = {};
+  console.log(world.features);
+  console.log(balance);
+  balance = b;
+  coords = c;
+  balance.forEach(function(d) { d.Positive = +d.Positive.split(",").join("");  console.log(d.Positive);});
+  balance.forEach(function(d) { d.Negative = +d.Negative.split(",").join(""); console.log(typeof d.Negative);});
+  // world.features.forEach(function(d) { d.balance = balanceById[d.id] });
+
+
+
+  size = d3.scaleLinear()
+      .domain(d3.extent(balance, function(d) { return d.Positive; }))
+      .range([1,45])
+
+  svgmap.append("g")
+      .attr("class", "countries")
+    .selectAll("path")
+      .data(world.features)
+    .enter().append("path")
+      .attr("d", path)
+
+      .style("fill", "rgb(177, 180, 177)")
+      .style('stroke', 'white')
+      .style('stroke-width', 1.5)
+      .style("opacity",0.8)
+
+      // tooltips
+      .style("stroke","white")
+      .style('stroke-width', 0.3);
+
+      };
+      //functions for toggling between data
+      function change(value){
+
+          	if(value === 'positive'){
+            	  positive();
+            }else if(value === 'negative'){
+            		negative();
+            }
+          }
+
+
+  function positive(){
+
+    console.log(coords);
+    // Set tooltips
+    var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function(d) {console.log(d.Negative);
+                  return "<strong>Country: </strong><span class='details'>" + d.Country + "<br></span>" + "<strong>EU balance of trade: </strong><span class='details'>" + d.Positive + "€" +"</span>" ;
+                });
+
+    svgmap.call(tip);
+
+    var circles = svgmap.selectAll("circle")
+                .data(coords);
+
+        circles.exit().remove();
+
+        new_circles = circles
+                .enter()
+                .append("circle")
+                .attr("class", "dots")
+
+        new_circles.merge(circles)
+                .attr("cx", function(d){
+                    var x = [d.long, d.lat];
+                    var p = projection(x);
+                    return p[0];
+                })
+                .attr("cy", function(d){
+                    var y = [d.long, d.lat];
+                    var p = projection(y);
+                    return p[1];
+                  })
+                .attr("id", function(d){
+                  return d.Country;
+                })
+                .attr("r",
+                function(d){
+                    for (i = 0; i < balance.length; i++){
+                      if (balance[i].code === d.code){
+                        if (balance[i].Positive == 0) {
+                          continue;
+                        } else {
+
+                        return size(balance[i].Positive);
+                      }
+
+                    }
+                  }
+                })
+                .style("fill", "rgb(115, 201, 118)")
+                .style("stroke", "green")
+                .style("opacity", ".5")
+                .style('stroke-width', 0.8)
+                  // .style("stroke-opacity", .9);
+                .on("mouseover", function(d) {
+
+                  tip.show(d)
+                  d3.select(this)
+                        .style("opacity", .8)
+                        .style("stroke","white")
+                        .style("stroke-width",2)
+
+        			   })
+        			   .on("mouseout", function(d) {
+                  tip.hide(d)
+                  d3.select(this)
+                        .style("opacity", 0.6)
+                        .style("stroke","green")
+                        .style("stroke-width",0.8);
+
+              });
+
+
+      };
+
+      function negative(){
+        // Set tooltips
+
+
+        var tip = d3.tip()
+                    .attr('class', 'd3-tip')
+                    .offset([-10, 0])
+                    .html(function(d) {
+                      return "<strong>Country: </strong><span class='details'>" + d.Country + "<br></span>" + "<strong>EU balance of trade: </strong><span class='details'>" + d.Negative + "€" +"</span>" ;
+                     });
+
+        svgmap.call(tip);
+
+        var circles = svgmap.selectAll("circle")
+                    .data(coords);
+
+            circles.exit().remove();
+
+            new_circles = circles
+                    .enter()
+                    .append("circle")
+                    .attr("class", "dots")
+
+            new_circles.merge(circles)
+                    .attr("cx", function(d){
+                        var x = [d.long, d.lat];
+                        var p = projection(x);
+                        return p[0];
+                    })
+                    .attr("cy", function(d){
+                        var y = [d.long, d.lat];
+                        var p = projection(y);
+                        return p[1];
+                      })
+                    .attr("id", function(d){
+                      return d.Country;
+                    })
+                    .attr("r",
+                    function(d){
+                        for (i = 0; i < balance.length; i++){
+                          if (balance[i].code === d.code){
+                            if (balance[i].Negative == 0) {
+                              continue;
+                            } else {
+
+                            return size(balance[i].Negative);
+                          }
+
+                        }
+                      }
+                    })
+                    .style("fill", "rgb(208, 88, 106)")
+                    .style("stroke", "red")
+                    .style("opacity", ".5")
+                    .style('stroke-width', 0.8)
+                      // .style("stroke-opacity", .9);
+                    .on("mouseover", function(d) {
+
+                      tip.show(d)
+                      d3.select(this)
+                            .style("opacity", .8)
+                            .style("stroke","white")
+                            .style("stroke-width",2)
+
+                     })
+                     .on("mouseout", function(d) {
+                      tip.hide(d)
+                      d3.select(this)
+                            .style("opacity", 0.6)
+                            .style("stroke","red")
+                            .style("stroke-width",0.8);
+
+                  });
+
+          };
+
+// }());
+
+// stacked();
+</script>
+</body>
+</html>

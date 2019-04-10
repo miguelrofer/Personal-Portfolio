@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.area.above {
+  fill: rgb(252,141,89);
+  opacity: .5;
+}
+
+.area.below {
+  fill: rgb(145,207,96);
+  opacity: .5;
+}
+
+.line {
+  fill: none;
+  stroke: rgb(18, 97, 5);
+  stroke-width: 1.5px;
+}
+
+.lineImport {
+  fill: none;
+  stroke: rgb(149, 23, 50);
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+  <div id="vis">
+  </div>
+</body>
+<script src="//d3js.org/d3.v4.min.js"></script>
+<script>
+console.log("try this out");
+
+var width = 800;
+var height = 500;
+var margin = {top: 20, right: 40, bottom: 40, left: 30};
+
+var svg = d3.select("#vis")
+      .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+
+var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      width = width - margin.left - margin.right;
+      height = height - margin.top - margin.bottom;
+
+
+
+var parseDate = d3.timeParse("%Y");
+
+var x = d3.scaleTime()
+    .range([0, width]);
+
+var y = d3.scaleLinear()
+    .range([height, 0]);
+
+// var xAxis = d3.svg.axis()
+//     .scale(x)
+//     .orient("bottom");
+//
+// var yAxis = d3.svg.axis()
+//     .scale(y)
+//     .orient("left");
+
+console.log("try this out now");
+
+
+
+//
+//     console.log("try this out now");
+//     console.log('puta');
+//
+// var area = d3.svg.area()
+//     .interpolate("monotone")
+//     .x(function(d) { return x(d.Year); })
+//     .y1(function(d) { return y(d["Exports"]); });
+
+
+
+
+d3.csv("importexporteUE.csv", function(error, data) {
+  if (error) throw error;
+  console.log(data);
+
+  //parse data
+  var countries = data.columns.slice(2).map(function(id) {
+    return {
+      id: id,
+      values: data.map(function(d, i) {
+
+        return {
+          Year: d.Year,
+          Category: d.Category,
+          Amount: d[id]
+
+          // Imports: if d.Category === "Imports" {
+          //   return {d[id]}
+          // },
+          // Exports: if d.Category === "Exports"{
+          //   return {d[id]}
+          // }
+
+
+        };
+
+
+      })
+    };
+  });
+
+countries, function(c){
+  console.log (return c.values);
+};
+
+  data.forEach(function(d,i) {
+    d.Year = parseDate(d.Year);
+    d["Amount"]= parseInt(d["Amount"]);
+
+    console.log(typeof d["Amount"]);
+    console.log(d["Amount"]);
+
+  });
+
+  x.domain(d3.extent(data, function(d) { return d.Year; }));
+
+  y.domain([
+    d3.min(data, function(d) { return Math.min(d["Exports"], d["Imports"]); }),
+    d3.max(data, function(d) { return Math.max(d["Exports"], d["Imports"]); })
+  ]);
+
+  var line = d3.area()
+  .curve(d3.curveCatmullRom)
+  .x(function(d) {
+    return x(d.Year);
+  })
+  .y(function(d) {
+      return y(d.Exports);
+  });
+
+  var area = d3.area()
+    .curve(d3.curveCatmullRom)
+    .x(function(d) { return x(d.Year); })
+    .y1(function(d) { return y(d["Exports"]); });
+
+
+
+  var lineImport = d3.line()
+  .curve(d3.curveCatmullRom)
+  .x(function(d) {
+    return x(d.Year);
+  })
+  .y(function(d) {
+      return y(d.Imports);
+  });
+
+  g.datum(data);
+
+  g.append("clipPath")
+     .attr("id", "clip-below")
+   .append("path")
+     .attr("d", area.y0(height));
+
+ g.append("clipPath")
+     .attr("id", "clip-above")
+   .append("path")
+     .attr("d", area.y0(0));
+
+ g.append("path")
+     .attr("class", "area above")
+     .attr("clip-path", "url(#clip-above)")
+     .attr("d", area.y0(function(d) { return y(d["Imports"]); }));
+
+ g.append("path")
+     .attr("class", "area below")
+     .attr("clip-path", "url(#clip-below)")
+     .attr("d", area);
+
+ g.append("path")
+     .attr("class", "line")
+     .attr("d", line);
+g.append("path")
+      .attr("class", "lineImport")
+      .attr("d", lineImport);
+
+  // ExportDifference = d3.area().x(function(d,i) {return x(d.Year)})
+  // .y(function(d) {return y(Math.max(d.Exports,d.Imports))})
+  // .y0(function(d) {return y(d.Imports)});
+  // .interpolate("linear");
+  //
+  // ImportDifference = d3.area().x(function(d,i) {return x(d.Year)})
+  // .y(function(d) {return y(Math.max(d.Imports,d.Exports))})
+  // .y0(function(d) {return y(d.Exports)})
+  // .interpolate("linear");
+  //
+  // g.append("path")
+  // .style("fill", "green")
+  // .style("fill-opacity", .5)
+  // .attr("class", "difference")
+  // .attr("d", ExportDifference(data))
+  //
+  // g.append("path")
+  // .style("fill", "red")
+  // .style("fill-opacity", .5)
+  // .attr("class", "difference")
+  // .attr("d", ImportDifference(data))
+  //
+  // g.append("path")
+  // .style("fill", "none")
+  // .style("stroke-width", "1px")
+  // .style("stroke", "darkgreen")
+  // .attr("class", "line")
+  // .attr("d", lineExp(data))
+  //
+  // g.append("path")
+  // .style("fill", "none")
+  // .style("stroke-width", "1px")
+  // .style("stroke", "darkred")
+  // .attr("class", "line")
+  // .attr("d", lineImp(data))
+
+
+
+
+
+  g.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x)
+        .ticks(5))
+      .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(0)")
+        .attr("x", width)
+        .attr("dy", "-0.3em")
+        .attr("text-anchor", "end")
+        .text("Year");
+    // .select(".domain")
+    //   .remove();
+
+  g.append("g")
+      .call(d3.axisLeft(y)
+        .ticks(4))
+      // .attr("transform", "translate(" + width + ", 0 )")
+      .append("text")
+        .attr("fill", "#000")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -5)
+        .attr("dy", "1.8em")
+        .attr("text-anchor", "end")
+        .text("Million €");
+
+
+
+
+
+  // g.append("clipPath")
+  //     .attr("id", "clip-below")
+  //   .append("path")
+  //     .attr("d", area.y0(height));
+  //
+  // g.append("clipPath")
+  //     .attr("id", "clip-above")
+  //   .append("path")
+  //     .attr("d", area.y0(0));
+  //
+  // svg.append("path")
+  //     .attr("class", "area above")
+  //     .attr("clip-path", "url(#clip-above)")
+  //     .attr("d", area.y0(function(d) { return y(d["San Francisco"]); }));
+  //
+  // svg.append("path")
+  //     .attr("class", "area below")
+  //     .attr("clip-path", "url(#clip-below)")
+  //     .attr("d", area);
+  //
+  // svg.append("path")
+  //     .attr("class", "line")
+  //     .attr("d", line);
+  //
+  // svg.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(xAxis);
+  //
+  // svg.append("g")
+  //     .attr("class", "y axis")
+  //     .call(yAxis)
+  //   .append("text")
+  //     .attr("transform", "rotate(-90)")
+  //     .attr("y", 6)
+  //     .attr("dy", ".71em")
+  //     .style("text-anchor", "end")
+  //     .text("Temperature (ºF)");
+});
+
+</script>
